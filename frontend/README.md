@@ -1,0 +1,74 @@
+# PDF Summary App – Frontend
+
+This is the React frontend for the PDF Summary App. It allows users to upload PDF files, view summaries, and ask questions about uploaded PDFs using the backend API.
+
+## Features
+- Upload PDF files to the backend
+- List and select uploaded PDFs
+- Generate and display summaries for PDFs
+- Ask questions about PDF content and display answers
+- Minimal, clean UI for demonstration
+
+## Tech Stack
+- **React** (Vite)
+- **Fetch API** for backend communication
+- **JavaScript** (ES6+)
+
+## Project Structure
+```
+frontend/
+├── public/           # Static assets
+├── src/
+│   ├── api.js        # API utility functions
+│   ├── App.jsx       # Main React component
+│   ├── main.jsx      # Entry point
+│   └── ...           # (Other components as needed)
+├── package.json      # NPM dependencies and scripts
+├── README.md         # This file
+└── ...
+```
+
+## Usage
+1. Install dependencies:
+	```sh
+	cd frontend
+	npm install
+	```
+2. Start the development server:
+	```sh
+	npm run dev
+	```
+3. Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+> **Note:** The backend API must be running at `http://localhost:8000` for the frontend to work.
+
+## API Integration
+- All API calls are defined in `src/api.js`.
+- Endpoints used:
+  - `POST /upload` – Upload PDF
+  - `GET /pdfs` – List PDFs
+  - `POST /summarize` – Summarize PDF
+  - `POST /qa` – Q&A on PDF
+
+## Customization
+- You can extend the UI by adding more components (e.g., PDF preview, history, etc.).
+- Update `API_BASE` in `src/api.js` if your backend runs on a different host/port.
+
+---
+For full-stack architecture, see the root `architecture.md`.
+# React + Vite
+
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+## React Compiler
+
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.

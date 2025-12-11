@@ -1,0 +1,68 @@
+# PDF Summary App – Architecture Diagram
+
+Below is an ASCII diagram representing the high-level flow of the PDF Summary App:
+
+```
++-------------------+         +-------------------+         +-------------------+
+|                   |         |                   |         |                   |
+|     Frontend      | <-----> |     FastAPI       | <-----> |    Ollama AI      |
+|   (React, planned)|  REST   |   Backend API     |  HTTP   |  (Summarization,  |
+|                   |         |                   |         |     Q&A)          |
++-------------------+         +-------------------+         +-------------------+
+         |                             |                             |
+         |                             |                             |
+         v                             v                             |
++-------------------+         +-------------------+                 |
+|                   |         |                   |                 |
+|   User Uploads    |         |  PDF Processing   |                 |
+|      PDF          |         |  (PyPDF2)         |                 |
+|                   |         |                   |                 |
++-------------------+         +-------------------+                 |
+         |                             |                             |
+         |                             v                             |
+         |                   +-------------------+                  |
+         |                   |                   |                  |
+         |                   |   Chunking &      |                  |
+         |                   |   Embedding       |                  |
+         |                   | (SentenceTransf.) |                  |
+         |                   +-------------------+                  |
+         |                             |                             |
+         |                             v                             |
+         |                   +-------------------+                  |
+         |                   |                   |                  |
+         |                   |   FAISS Vector    |                  |
+         |                   |   Search Index    |                  |
+         |                   +-------------------+                  |
+         |                             |                             |
+         |                             v                             |
+         |                   +-------------------+                  |
+         |                   |                   |                  |
+         |                   |   SQLite DB       |                  |
+         |                   | (SQLAlchemy)      |                  |
+         |                   +-------------------+                  |
+         |                             |                             |
+         |                             v                             |
+         |                   +-------------------+                  |
+         |                   |                   |                  |
+         |                   |   API Endpoints   |                  |
+         |                   | (Summarize/Q&A)   |------------------+
+         |                   +-------------------+
+         |                             |
+         v                             v
++-------------------+         +-------------------+
+|                   |         |                   |
+|   User Views      |         |   User Asks Qs    |
+|   Summary         |         |   About PDF       |
+|                   |         |                   |
++-------------------+         +-------------------+
+```
+
+**Legend:**
+- User interacts with the React frontend (upload, view summary, ask questions)
+- Frontend communicates with FastAPI backend
+- Backend processes PDF, chunks, embeds, stores in FAISS/SQLite
+- Ollama AI is used for summarization and Q&A
+- Results are returned to the user via the frontend
+
+---
+For more details, see the rest of this `architecture.md` and the backend `README.md`.
