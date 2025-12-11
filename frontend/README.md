@@ -7,20 +7,8 @@ This is the React frontend for the PDF Summary App. It allows users to upload PD
 - List and select uploaded PDFs
 - Generate and display summaries for PDFs
 - Ask questions about PDF content and display answers
-- Minimal, clean UI for demonstration
-
-## Tech Stack
-- **React** (Vite)
-- **Fetch API** for backend communication
-- **JavaScript** (ES6+)
-
-## Project Structure
-```
 frontend/
 ├── public/           # Static assets
-├── src/
-│   ├── api.js        # API utility functions
-│   ├── App.jsx       # Main React component
 │   ├── main.jsx      # Entry point
 │   └── ...           # (Other components as needed)
 ├── package.json      # NPM dependencies and scripts
@@ -51,8 +39,6 @@ frontend/
   - `POST /qa` – Q&A on PDF
 
 ## Customization
-- You can extend the UI by adding more components (e.g., PDF preview, history, etc.).
-- Update `API_BASE` in `src/api.js` if your backend runs on a different host/port.
 
 ---
 For full-stack architecture, see the root `architecture.md`.
@@ -60,11 +46,9 @@ For full-stack architecture, see the root `architecture.md`.
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
-
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+See `../architecture.md` for diagram and flow.
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
 ## React Compiler
 
 The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).

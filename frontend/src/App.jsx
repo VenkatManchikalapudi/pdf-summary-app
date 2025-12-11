@@ -167,26 +167,62 @@ export default function App() {
                 onClick={handleSummarize}
                 disabled={!selectedPdf || loading}
                 style={{
-                  background: selectedPdf && !loading ? 'linear-gradient(90deg, #4f8cff 0%, #3a3d4d 100%)' : '#e3e6ee',
+                  background: selectedPdf && !loading
+                    ? 'linear-gradient(90deg, #3b82f6 0%, #60a5fa 50%, #2563eb 100%)'
+                    : 'rgba(227,230,238,0.85)',
                   color: selectedPdf && !loading ? '#fff' : '#b0b8c9',
-                  border: 'none',
-                  borderRadius: 12,
-                  padding: '14px 0',
-                  fontWeight: 800,
-                  fontSize: 18,
-                  letterSpacing: 0.5,
-                  boxShadow: selectedPdf && !loading ? '0 4px 16px #4f8cff22' : 'none',
+                  border: selectedPdf && !loading ? '1.5px solid #e0e7ff' : '1.5px solid #e3e6ee',
+                  borderRadius: 16,
+                  padding: '18px 0',
+                  fontWeight: 900,
+                  fontSize: 22,
+                  letterSpacing: 1,
+                  boxShadow: selectedPdf && !loading ? '0 8px 32px #3b82f633, 0 1.5px 8px #fff8' : 'none',
                   cursor: selectedPdf && !loading ? 'pointer' : 'not-allowed',
-                  transition: 'background 0.18s, color 0.18s, box-shadow 0.18s',
+                  transition: 'background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.14s, border 0.18s',
                   marginTop: 22,
                   width: '100%',
                   outline: 'none',
-                  borderBottom: selectedPdf && !loading ? '3px solid #4f8cff' : '3px solid #e3e6ee',
+                  borderBottom: selectedPdf && !loading ? '3px solid #2563eb' : '3px solid #e3e6ee',
+                  transform: loading ? 'scale(0.97)' : 'scale(1)',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  backdropFilter: selectedPdf && !loading ? 'blur(2.5px)' : 'none',
+                  WebkitBackdropFilter: selectedPdf && !loading ? 'blur(2.5px)' : 'none',
+                  backgroundClip: 'padding-box',
+                  boxSizing: 'border-box',
                 }}
-                onMouseOver={e => { if (selectedPdf && !loading) e.target.style.background = 'linear-gradient(90deg, #3a3d4d 0%, #4f8cff 100%)'; }}
-                onMouseOut={e => { if (selectedPdf && !loading) e.target.style.background = 'linear-gradient(90deg, #4f8cff 0%, #3a3d4d 100%)'; }}
+                onMouseOver={e => {
+                  if (selectedPdf && !loading) {
+                    e.target.style.background = 'linear-gradient(90deg, #2563eb 0%, #3b82f6 100%)';
+                    e.target.style.transform = 'scale(1.025)';
+                  }
+                }}
+                onMouseOut={e => {
+                  if (selectedPdf && !loading) {
+                    e.target.style.background = 'linear-gradient(90deg, #3b82f6 0%, #60a5fa 50%, #2563eb 100%)';
+                    e.target.style.transform = 'scale(1)';
+                  }
+                }}
+                onMouseDown={e => {
+                  if (selectedPdf && !loading) e.target.style.transform = 'scale(0.97)';
+                }}
+                onMouseUp={e => {
+                  if (selectedPdf && !loading) e.target.style.transform = 'scale(1.025)';
+                }}
               >
-                <span style={{ letterSpacing: 1, fontSize: 18 }}>Summarize</span>
+                {loading ? (
+                  <span className="lds-dual-ring" style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%) scale(0.7)' }} />
+                ) : (
+                  <span style={{
+                    letterSpacing: 1.5,
+                    fontSize: 22,
+                    fontWeight: 900,
+                    color: selectedPdf && !loading ? '#fff' : '#b0b8c9',
+                    textShadow: 'none',
+                    filter: 'none',
+                  }}>Summarize</span>
+                )}
               </button>
               {pdfs.length === 0 && (
                 <div style={{ color: '#b0b8c9', textAlign: 'center', margin: '1.5rem 0', fontWeight: 500 }}>

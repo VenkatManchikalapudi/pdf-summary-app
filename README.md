@@ -2,17 +2,33 @@
 
 ![App Screenshot](screenshot.png)
 
+---
+
+## Architecture
+
+See `architecture.md` for a full diagram and flow.
+
+**Key Points:**
+- Modern SaaS-style PDF upload, summary, and Q&A app
+- Backend: FastAPI, persistent summary cache (shelve), in-memory Q&A cache
+- Frontend: React (Vite), modular, multi-column UI
+- Ollama (Llama2) for agentic summarization and Q&A
+
+---
+
 A modern, full-stack SaaS-style application for uploading PDF files, generating AI-powered summaries, and performing Q&A on document content. Built with FastAPI (Python) for the backend and React (Vite) for the frontend. Integrates with local LLMs (Ollama, Llama2) for agentic summarization and question answering.
 
 ---
 
+
 ## Features
 
-- **PDF Upload:** Upload and manage multiple PDF files.
-- **AI Summarization:** Generate concise, agentic summaries using Llama2 via Ollama.
-- **Q&A:** Ask questions about the uploaded PDF and get context-aware answers.
-- **Modern UI:** Clean, multi-column SaaS-inspired interface with drag-and-drop upload, summary, and Q&A panels.
-- **Modular Codebase:** Separated backend and frontend for easy maintenance and scalability.
+- **PDF Upload:** Upload and manage multiple PDF files
+- **AI Summarization:** Generate concise, agentic summaries using Llama2 via Ollama
+- **Q&A:** Ask questions about the uploaded PDF and get context-aware answers
+- **Persistent Summary Cache:** Summaries are cached on disk and survive restarts
+- **Modern UI:** Clean, multi-column SaaS-inspired interface
+- **Modular Codebase:** Separated backend and frontend for easy maintenance
 
 ---
 
@@ -24,29 +40,35 @@ A modern, full-stack SaaS-style application for uploading PDF files, generating 
 
 ---
 
+
 ## Project Structure
 
 ```
-/pdf-summary-app
-├── backend
+pdf-summary-app/
+├── backend/
 │   ├── app/
-│   │   ├── api/endpoints.py      # API endpoints (upload, summarize, Q&A)
-│   │   ├── services/             # Ollama and PDF utilities
+│   │   ├── api/endpoints.py
+│   │   ├── services/
 │   │   └── ...
-│   ├── main.py                   # FastAPI entrypoint
-│   ├── requirements.txt
+│   ├── uploads/
+│   ├── summary_cache.db
+│   ├── README.md
 │   └── ...
-├── frontend
+├── frontend/
 │   ├── src/
-│   │   ├── App.jsx               # Main React app
-│   │   ├── components/           # FileUpload, PDFList, SummaryView, QASection, StatusBar
+│   │   ├── App.jsx
+│   │   ├── components/
 │   │   └── ...
-│   ├── package.json
+│   ├── README.md
 │   └── ...
-└── README.md
+├── architecture.md
+├── architecture-flow.txt
+├── README.md
+└── screenshot.png
 ```
 
 ---
+
 
 ## Getting Started
 
@@ -61,7 +83,6 @@ cd backend
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-# Start FastAPI server
 uvicorn app.main:app --reload
 ```
 
@@ -80,16 +101,16 @@ npm run dev
 ---
 
 ## Usage
-1. Start backend, frontend, and Ollama server as above.
-2. Open the frontend in your browser (default: http://localhost:5173).
-3. Upload a PDF, click Summarize, and interact with the Q&A panel.
+1. Start backend, frontend, and Ollama server as above
+2. Open the frontend in your browser (default: http://localhost:5173)
+3. Upload a PDF, click Summarize, and interact with the Q&A panel
 
 ---
 
 ## Customization & Extensibility
-- Add new LLMs or endpoints in `backend/app/services/`.
-- Extend UI components in `frontend/src/components/`.
-- For persistent PDF storage, integrate a database in the backend.
+- Add new LLMs or endpoints in `backend/app/services/`
+- Extend UI components in `frontend/src/components/`
+- For persistent PDF storage, integrate a database in the backend
 
 ---
 
