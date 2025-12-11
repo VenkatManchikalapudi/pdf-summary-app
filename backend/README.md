@@ -1,3 +1,31 @@
+# Backend (FastAPI)
+
+## Features
+- PDF upload, list, summarize, and Q&A endpoints
+- Ollama (Llama2) integration for agentic summarization and Q&A
+- **Persistent summary cache** (shelve, survives restarts; see `summary_cache.db`)
+- **In-memory Q&A cache** (per session)
+
+## Endpoints
+- `POST /upload` — Upload a PDF
+- `GET /pdfs` — List all PDFs
+- `POST /summarize` — Summarize a PDF (persistent cache)
+- `POST /qa` — Q&A on a PDF (in-memory cache)
+
+## Setup
+```bash
+cd backend
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+## Architecture
+See `../architecture.md` and `../architecture-flow.txt` for diagrams and flow.
+
+## Notes
+- Summaries are cached in `summary_cache.db` (shelve, persistent)
+- Q&A cache is in-memory only
+- All PDFs are stored in `uploads/`
 # PDF Summary App – Backend
 
 This is the backend implementation for the PDF Summary App. It provides RESTful APIs for uploading PDF files, generating summaries, and performing Q&A on PDF content using AI models.

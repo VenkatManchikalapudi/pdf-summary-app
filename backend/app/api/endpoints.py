@@ -41,10 +41,14 @@ uploaded_pdfs = {}  # In-memory: pdf_id -> filename
 # --- Endpoints ---
 @router.get("/pdfs", response_model=List[PDFMetadata])
 def list_pdfs():
-	"""List all uploaded PDFs with metadata."""
+	"""List all PDFs in the uploads directory with metadata."""
+	import os
+	uploads_dir = "./uploads"
 	pdfs = []
-	for pdf_id, filename in uploaded_pdfs.items():
-		pdfs.append(PDFMetadata(id=pdf_id, filename=filename, filepath=f"/uploads/{filename}"))
+	if os.path.exists(uploads_dir):
+		files = [f for f in os.listdir(uploads_dir) if f.lower().endswith('.pdf')]
+		for idx, filename in enumerate(sorted(files), start=1):
+			pdfs.append(PDFMetadata(id=idx, filename=filename, filepath=f"/uploads/{filename}"))
 	return pdfs
 
 @router.get("/pdf/{pdf_id}", response_model=PDFDetail)
@@ -82,20 +86,39 @@ class SummarizeRequest(BaseModel):
 class SummarizeResponse(BaseModel):
 	summary: str
 
+
+
+# --- Persistent cache for summaries (file-based using shelve) ---
+import shelve
+SUMMARY_CACHE_PATH = './summary_cache.db'
+qa_cache = {}  # Q&A can remain in-memory for now
+
 @router.post("/summarize", response_model=SummarizeResponse)
 def summarize_pdf(request: SummarizeRequest):
-	"""Summarize the PDF with the given ID using Ollama Llama2."""
-	filename = uploaded_pdfs.get(request.pdf_id)
-	if not filename:
-		raise HTTPException(status_code=404, detail="PDF not found")
-	pdf_path = os.path.join("./uploads", filename)
+	"""Summarize the PDF with the given ID using Ollama Llama2. Uses persistent file-based cache."""
+	import os
+	uploads_dir = "./uploads"
+	if not os.path.exists(uploads_dir):
+		raise HTTPException(status_code=404, detail="Uploads directory not found")
+	files = [f for f in os.listdir(uploads_dir) if f.lower().endswith('.pdf')]
+	files_sorted = sorted(files)
 	try:
-		text = extract_text_from_pdf(pdf_path)
-		truncated_text = text[:4000]
-		summary = summarize_with_ollama(truncated_text)
-		return SummarizeResponse(summary=summary)
-	except Exception as e:
-		raise HTTPException(status_code=500, detail=str(e))
+		filename = files_sorted[request.pdf_id - 1]
+	except IndexError:
+		raise HTTPException(status_code=404, detail="PDF not found")
+	# Persistent caching logic
+	with shelve.open(SUMMARY_CACHE_PATH) as summary_cache:
+		if str(request.pdf_id) in summary_cache:
+			return SummarizeResponse(summary=summary_cache[str(request.pdf_id)])
+		pdf_path = os.path.join(uploads_dir, filename)
+		try:
+			text = extract_text_from_pdf(pdf_path)
+			truncated_text = text[:4000]
+			summary = summarize_with_ollama(truncated_text)
+			summary_cache[str(request.pdf_id)] = summary
+			return SummarizeResponse(summary=summary)
+		except Exception as e:
+			raise HTTPException(status_code=500, detail=str(e))
 
 class QARequest(BaseModel):
 	pdf_id: int
@@ -107,14 +130,26 @@ class QAResponse(BaseModel):
 @router.post("/qa", response_model=QAResponse)
 def qa_pdf(request: QARequest):
 	"""Answer a question about the PDF with the given ID using Ollama Llama2."""
-	filename = uploaded_pdfs.get(request.pdf_id)
-	if not filename:
+	import os
+	uploads_dir = "./uploads"
+	if not os.path.exists(uploads_dir):
+		raise HTTPException(status_code=404, detail="Uploads directory not found")
+	files = [f for f in os.listdir(uploads_dir) if f.lower().endswith('.pdf')]
+	files_sorted = sorted(files)
+	try:
+		filename = files_sorted[request.pdf_id - 1]
+	except IndexError:
 		raise HTTPException(status_code=404, detail="PDF not found")
-	pdf_path = os.path.join("./uploads", filename)
+	# Caching logic
+	cache_key = (request.pdf_id, request.question.strip().lower())
+	if cache_key in qa_cache:
+		return QAResponse(answer=qa_cache[cache_key])
+	pdf_path = os.path.join(uploads_dir, filename)
 	try:
 		text = extract_text_from_pdf(pdf_path)
 		truncated_text = text[:4000]
 		answer = qa_with_ollama(truncated_text, request.question)
+		qa_cache[cache_key] = answer
 		return QAResponse(answer=answer)
 	except Exception as e:
 		raise HTTPException(status_code=500, detail=str(e))
